@@ -44,6 +44,6 @@ part2 :: IO Int
 part2 = do
     inputData <- readInput
     return $ head [
-        acc | tip <- [ip | (ip, (cmd,_)) <- inputData, cmd `elem` ["jmp", "nop"]], -- Get list of instruction pointers for jmp and nop instructions
+        acc | tip <- [ip | (ip, (cmd,_)) <- inputData, cmd `elem` ["jmp", "nop"]], -- Get list of instruction indexes for jmp and nop instructions
         let (ip,acc) = emulateCode (0,0) [] $ swapInstruction tip inputData, -- emulate each set of code with the instructons swapped
         ip == length inputData] -- Filter permutations to the ones that have an instruction pointer that is at the end of the code when completed
