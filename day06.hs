@@ -13,18 +13,14 @@ groupVotes' ls cs (x:xs)
     | otherwise = groupVotes' ls (x:cs) xs
 
 groupVotes :: [String] -> [[String]]
-groupVotes xs = groupVotes' [] [] xs
+groupVotes = groupVotes' [] []
 
 uniqueGroupVotes :: [String] -> [String]
 uniqueGroupVotes = map (nub . concat) . groupVotes
 
 part1 :: IO Int
-part1 = do
-    inputData <- readInput
-    return $ sum $ map length (uniqueGroupVotes inputData)
+part1 = do sum . map length . uniqueGroupVotes <$> readInput
 
 
 part2 :: IO Int
-part2 = do
-    inputData <- readInput
-    return $ sum $ map (length . foldl1 intersect) $ groupVotes inputData
+part2 = do sum . map (length . foldl1 intersect) . groupVotes <$> readInput

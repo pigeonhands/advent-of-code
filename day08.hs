@@ -3,14 +3,14 @@ parseParam all@(x:xs)
     | x == '+' = read xs
     | otherwise = read all
 
-parseLine :: (Int, String) -> (Int, (String, Int))
-parseLine (ip, l) = (ip, (i, parseParam p))
+parseLine :: Int -> String -> (Int, (String, Int))
+parseLine ip l = (ip, (i, parseParam p))
     where [i,p] = words l
           
 readInput :: IO [(Int, (String, Int))]
 readInput = do
     content <- readFile "day08.txt"
-    return $ map parseLine $ zip [0..] $ lines content
+    return $ zipWith parseLine [0 .. ] (lines content)
 
 runInstruction :: (Int, Int) -> (String, Int) -> (Int, Int)
 runInstruction (ip, acc) is = 
@@ -22,14 +22,14 @@ runInstruction (ip, acc) is =
 emulateCode :: (Int, Int) -> [Int] -> [(Int, (String, Int))] -> (Int, Int)
 emulateCode (ip, acc) sf isx 
     | ip `elem` sf = (ip, acc)
-    | otherwise = case (lookup ip isx) of 
+    | otherwise = case lookup ip isx of 
         Just ni -> emulateCode (runInstruction (ip, acc) ni) (ip:sf) isx
         Nothing -> (ip, acc)
 
 swapInstruction :: Int -> [(Int, (String, Int))] -> [(Int, (String, Int))]
 swapInstruction ip (c:cs)
     | ip == isp = (isp, (newc, arg)):cs
-    | otherwise = c : (swapInstruction ip cs)
+    | otherwise = c : swapInstruction ip cs
     where (isp, (cmd,arg)) = c
           newc = case cmd of 
                 "nop" -> "jmp"

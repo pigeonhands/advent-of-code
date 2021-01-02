@@ -20,13 +20,13 @@ getAggFunction uc lc ic
     | uc == ic = drop
 
 findBinary ::  Char -> Char -> [Int] -> String -> Int
-findBinary uc lc (r1:r2:[]) (x:[])
+findBinary uc lc [r1, r2] [x]
     | x == lc = r1
     | otherwise = r2
 findBinary uc lc rs (x:xs) = 
     findBinary uc lc (bf half rs) xs
     where 
-        half = ((length rs) `div` 2)
+        half = length rs `div` 2
         bf = getAggFunction uc lc x
 
 findRow :: String -> Int
@@ -47,9 +47,7 @@ findSeat s = (cs,rs)
     where (cs,rs) = splitAt 7 s
 
 part1 :: IO Int
-part1 = do
-    inputData <- readInput
-    return $ maximum $ map toSeatID inputData
+part1 = do maximum . map toSeatID <$> readInput
 
 findNonSequentialNumber :: [Int] -> Int
 findNonSequentialNumber (x:xs)
@@ -57,6 +55,4 @@ findNonSequentialNumber (x:xs)
     | otherwise = x+1
 
 part2 :: IO Int
-part2 = do
-    inputData <- readInput
-    return $ findNonSequentialNumber $ sort $ map toSeatID inputData
+part2 = do findNonSequentialNumber . sort . map toSeatID <$> readInput

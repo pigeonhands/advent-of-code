@@ -2,8 +2,8 @@ import Data.List
 import Data.List.Split
 
 parseLine :: String -> ((Int,Int), Char, String)
-parseLine l = ((r1,r2), (head c), ps)
-    where (rs:c:ps:[]) = words l
+parseLine l = ((r1,r2), head c, ps)
+    where [rs, c, ps] = words l
           [r1,r2] = map read $ splitOn  "-" rs
 
 readInput :: IO [((Int,Int), Char, String)]
@@ -37,7 +37,7 @@ part1 = do
     return $ length $ validPasswords inputData policy1PasswordIsValid
 
 policy2PasswordIsValid :: Int -> Int -> Char -> String -> Bool
-policy2PasswordIsValid i1 i2 c p = (length $ intersect [i1-1,i2-1] $ indexesOfChar 0 [] c p) == 1
+policy2PasswordIsValid i1 i2 c p = length (intersect [i1 - 1, i2 - 1] $ indexesOfChar 0 [] c p) == 1
 
 part2 :: IO Int
 part2 = do
