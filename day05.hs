@@ -9,6 +9,11 @@ inputData = [
     "FFBFBFFLLL",
     "BFBBBBFLLL"]
 
+readInput :: IO [String]
+readInput = do
+    content <- readFile "day05.txt"
+    return $ lines $ filter (not . (`elem` "\r")) content 
+
 getAggFunction :: Char -> Char -> Char -> (Int -> [a] -> [a])
 getAggFunction uc lc ic
     | lc == ic = take
@@ -24,30 +29,34 @@ findBinary uc lc rs (x:xs) =
         half = ((length rs) `div` 2)
         bf = getAggFunction uc lc x
 
-findRow :: [Int] -> String -> Int
-findRow = findBinary 'B' 'F'
+findRow :: String -> Int
+findRow = findBinary 'B' 'F' [0..128]
 
-findCol :: [Int] -> String -> Int
-findCol = findBinary 'R' 'L'
+findCol :: String -> Int
+findCol = findBinary 'R' 'L' [0..7]
 
 toSeatID :: String -> Int
 toSeatID ls = (row * 8) + col
     where 
         (rs,cs) = splitAt 7 ls
-        row = findRow [0..128] rs
-        col = findCol [0..7] cs
+        row = findRow rs
+        col = findCol cs
 
 findSeat :: String -> (String,String)
 findSeat s = (cs,rs)
     where (cs,rs) = splitAt 7 s
 
-part1 :: Int
-part1 = maximum $ map toSeatID inputData
+part1 :: IO Int
+part1 = do
+    inputData <- readInput
+    return $ maximum $ map toSeatID inputData
 
 findNonSequentialNumber :: [Int] -> Int
 findNonSequentialNumber (x:xs)
     | (x+1) == head xs = findNonSequentialNumber xs
     | otherwise = x+1
 
-part2 :: Int
-part2 = findNonSequentialNumber $ sort $ map toSeatID inputData
+part2 :: IO Int
+part2 = do
+    inputData <- readInput
+    return $ findNonSequentialNumber $ sort $ map toSeatID inputData

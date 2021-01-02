@@ -1,37 +1,30 @@
 import Data.List
 
-inputData :: [String]
-inputData = [
-    "abc",
-    "",
-    "a",
-    "b",
-    "c",
-    "",
-    "ab",
-    "ac",
-    "",
-    "a",
-    "a",
-    "a",
-    "a",
-    "",
-    "b"]
 
-groupVotes_ :: [[String]] -> [String] -> [String] -> [[String]]
-groupVotes_ ls cs [] = cs:ls
-groupVotes_ ls cs (x:xs) 
-    | x == "" = groupVotes_ (cs:ls) [] xs
-    | otherwise = groupVotes_ ls (x:cs) xs
+readInput :: IO [String]
+readInput = do
+    content <- readFile "day06.txt"
+    return $ lines $ filter (not . (`elem` "\r")) content
 
-groupVotes :: [[String]]
-groupVotes = groupVotes_ [] [] inputData
+groupVotes' :: [[String]] -> [String] -> [String] -> [[String]]
+groupVotes' ls cs [] = cs:ls
+groupVotes' ls cs (x:xs) 
+    | x == "" = groupVotes' (cs:ls) [] xs
+    | otherwise = groupVotes' ls (x:cs) xs
 
-uniqueGroupVotes :: [String]
-uniqueGroupVotes = map (nub . concat) groupVotes
+groupVotes :: [String] -> [[String]]
+groupVotes xs = groupVotes' [] [] xs
 
-part1 :: Int
-part1 = sum $ map length uniqueGroupVotes
+uniqueGroupVotes :: [String] -> [String]
+uniqueGroupVotes = map (nub . concat) . groupVotes
 
-part2 :: Int
-part2 = sum $ map (length . foldl1 intersect) groupVotes
+part1 :: IO Int
+part1 = do
+    inputData <- readInput
+    return $ sum $ map length (uniqueGroupVotes inputData)
+
+
+part2 :: IO Int
+part2 = do
+    inputData <- readInput
+    return $ sum $ map (length . foldl1 intersect) $ groupVotes inputData
