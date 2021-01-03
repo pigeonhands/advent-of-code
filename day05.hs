@@ -47,7 +47,7 @@ findSeat s = (cs,rs)
     where (cs,rs) = splitAt 7 s
 
 part1 :: IO Int
-part1 = do maximum . map toSeatID <$> readInput
+part1 = maximum . map toSeatID <$> readInput
 
 findNonSequentialNumber :: [Int] -> Int
 findNonSequentialNumber (x:xs)
@@ -55,4 +55,4 @@ findNonSequentialNumber (x:xs)
     | otherwise = x+1
 
 part2 :: IO Int
-part2 = do findNonSequentialNumber . sort . map toSeatID <$> readInput
+part2 = findNonSequentialNumber . sort . map toSeatID <$> readInput

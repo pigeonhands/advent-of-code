@@ -11,14 +11,13 @@ numberIsWeak xs n = n `notElem ` [x+y| x:ys <- tails xs, y <- ys]
 
 getFirstWeakNumber :: Int -> [Int] -> Int  
 getFirstWeakNumber n xs 
-    | numberIsWeak preamble port = port
+    | numberIsWeak = i
     | otherwise = getFirstWeakNumber n (tail xs)
     where set = take n xs
-          preamble = take (n-1) set
-          port = last set
+          i = last set
+          numberIsWeak = i `notElem ` [x+y| x:ys <- tails (take (n-1) set), y <- ys]
 
 getSumSequence ::  [Int] -> Int -> [Int] -> [Int]
-getSumSequence _ _ [] = []
 getSumSequence [] n (x:xs) = getSumSequence [x] n xs
 getSumSequence cx n (x:xs) 
     | csum == n = cx
@@ -27,10 +26,13 @@ getSumSequence cx n (x:xs)
     where csum = sum cx 
 
 findSumPattern :: Int -> [Int] -> [Int]
-findSumPattern n xs = head [sq | ys <- tails xs, let sq = getSumSequence [] n ys, not (null sq)]
+findSumPattern n xs = head [
+    sq | ys <- tails xs, 
+    let sq = getSumSequence [] n ys, 
+    not (null sq)]
 
 part1 :: IO Int 
-part1 = do getFirstWeakNumber 26 <$> readInput
+part1 = getFirstWeakNumber 26 <$> readInput
 
 part2 :: IO Int 
 part2 = do 
