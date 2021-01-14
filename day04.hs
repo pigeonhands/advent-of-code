@@ -17,7 +17,6 @@ readInput = do
 filterFields :: [String] -> [(String, String)] -> [(String, String)]
 filterFields fs xs = [(f,v) | (f,v) <- xs, f `elem` fs]
 
-
 fieldIsValid :: (String, String) -> Bool
 fieldIsValid (f,v) = 
     case f of "byr" -> vi >= 1920 && vi <= 2002
