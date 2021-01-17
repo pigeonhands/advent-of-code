@@ -4,10 +4,10 @@ readInput = do
     return $ lines $ filter (not . (`elem` "\r")) content
 
 
-flightPath :: [String] -> [(Int,Int)] -> Int -> Int -> (Int,Int) -> [(Int,Int)]
-flightPath fm p x y s@(sx,sy)
-    | y >= length fm = p
-    | otherwise = flightPath fm ((x,y):p) (x+sx) (y+sy) s
+flightPath :: [String] -> (Int,Int) -> (Int,Int) -> [(Int,Int)]
+flightPath fm (x,y) s@(sx,sy)
+    | y >= length fm = []
+    | otherwise = (x,y):flightPath fm (x + sx, y + sy) s
 
 isTree :: [String] -> (Int, Int) -> Bool
 isTree fm (x, y)
@@ -16,7 +16,7 @@ isTree fm (x, y)
     where row = fm!!y
 
 treesInPath :: [String] -> (Int,Int) -> [(Int,Int)]
-treesInPath fm (sx,sy) = [p | p <- flightPath fm [] 0 0 (sx, sy), isTree fm p]
+treesInPath fm (sx,sy) = [p | p <- flightPath fm (0,0) (sx, sy), isTree fm p]
 
 part1 :: IO Int
 part1 = do

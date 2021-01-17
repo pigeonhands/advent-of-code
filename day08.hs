@@ -19,12 +19,14 @@ runInstruction (ip, acc) is =
                 "jmp" -> (ip+arg, acc)
     where (cmd,arg) = is
 
-emulateCode :: (Int, Int) -> [Int] -> [(Int, (String, Int))] -> (Int, Int)
-emulateCode (ip, acc) sf isx 
-    | ip `elem` sf = (ip, acc)
-    | otherwise = case lookup ip isx of 
-        Just ni -> emulateCode (runInstruction (ip, acc) ni) (ip:sf) isx
-        Nothing -> (ip, acc)
+emulateCode :: [(Int, (String, Int))] -> (Int, Int)
+emulateCode = go (0,0) []
+    where
+        go (ip, acc) sf isx 
+            | ip `elem` sf = (ip, acc)
+            | otherwise = case lookup ip isx of 
+                Just ni -> go (runInstruction (ip, acc) ni) (ip:sf) isx
+                Nothing -> (ip, acc)
 
 swapInstruction :: Int -> [(Int, (String, Int))] -> [(Int, (String, Int))]
 swapInstruction ip (c:cs)
@@ -38,12 +40,12 @@ swapInstruction ip (c:cs)
 part1 :: IO Int
 part1 = do
     inputData <- readInput
-    return . snd $ emulateCode (0,0) [] inputData
+    return . snd $ emulateCode inputData
 
 part2 :: IO Int
 part2 = do
     inputData <- readInput
     return $ head [
         acc | tip <- [ip | (ip, (cmd,_)) <- inputData, cmd `elem` ["jmp", "nop"]], -- Get list of instruction indexes for jmp and nop instructions
-        let (ip,acc) = emulateCode (0,0) [] $ swapInstruction tip inputData, -- emulate each set of code with the instructons swapped
+        let (ip,acc) = emulateCode $ swapInstruction tip inputData, -- emulate each set of code with the instructons swapped
         ip == length inputData] -- Filter permutations to the ones that have an instruction pointer that is at the end of the code when completed

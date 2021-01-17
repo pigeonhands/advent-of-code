@@ -11,14 +11,16 @@ readInput = do
     content <- readFile "day02.txt"
     return $ map parseLine $ lines content
 
-indexesOfChar :: Num c => c -> [c] -> Char -> String -> [c]
-indexesOfChar i ix c (x:xs)  
-    | x == c    = indexesOfChar (i+1) (i:ix) c xs
-    | otherwise = indexesOfChar (i+1) ix c xs 
-indexesOfChar i ix n c = ix
+indexesOfChar :: Num c => Char -> String -> [c]
+indexesOfChar = go 0
+    where 
+    go i c [] = []
+    go i c (x:xs)
+        | x == c    = i:go (i+1) c xs
+        | otherwise = go (i+1) c xs 
 
 occurancesOfChar :: Char -> String -> Int
-occurancesOfChar c p = length $ indexesOfChar 0 [] c p
+occurancesOfChar c p = length $ indexesOfChar c p
 
 isBetweenInc :: Int -> Int -> Int -> Bool
 isBetweenInc min max n 
@@ -37,7 +39,7 @@ part1 = do
     return $ length $ validPasswords inputData policy1PasswordIsValid
 
 policy2PasswordIsValid :: Int -> Int -> Char -> String -> Bool
-policy2PasswordIsValid i1 i2 c p = length (intersect [i1 - 1, i2 - 1] $ indexesOfChar 0 [] c p) == 1
+policy2PasswordIsValid i1 i2 c p = length (intersect [i1 - 1, i2 - 1] $ indexesOfChar c p) == 1
 
 part2 :: IO Int
 part2 = do

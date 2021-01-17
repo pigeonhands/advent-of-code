@@ -2,17 +2,27 @@ import Data.Char
 import Data.List
 import Data.List.Split
 
-parseSets :: [[(String, String)]] -> [(String, String)] -> [String] -> [[(String, String)]]
-parseSets ss cs [] = cs:ss
-parseSets ss cs (x:xs)
-    | x == "" = parseSets (cs:ss) [] xs
-    | otherwise = parseSets ss ((n,v):cs) xs
+
+parseSets' :: [[(String, String)]] -> [(String, String)] -> [String] -> [[(String, String)]]
+parseSets' ss cs [] = cs:ss
+parseSets' ss cs (x:xs)
+    | x == "" = parseSets' (cs:ss) [] xs
+    | otherwise = parseSets' ss ((n,v):cs) xs
     where [n,v] = splitOn ":" x
+
+parseSets :: [String] -> [[(String, String)]]
+parseSets = go []
+    where 
+        go cs [] = [cs]
+        go cs (x:xs)
+            | x == "" = cs:go [] xs
+            | otherwise = go ((n,v):cs) xs
+            where [n,v] = splitOn ":" x
 
 readInput :: IO [[(String, String)]]
 readInput = do
     content <- readFile "day04.txt"
-    return . parseSets [] [] $ splitOneOf "\n " $ filter (not . (`elem` "\r")) content
+    return . parseSets $ splitOneOf "\n " $ filter (not . (`elem` "\r")) content
 
 filterFields :: [String] -> [(String, String)] -> [(String, String)]
 filterFields fs xs = [(f,v) | (f,v) <- xs, f `elem` fs]
