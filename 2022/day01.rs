@@ -11,7 +11,7 @@ fn get_calories_list() -> Vec<i32> {
     let output = input.into_iter().fold(vec![0], |mut acc, x| {
         if x == "" {
             acc.push(0);
-        }else{
+        } else {
             *acc.last_mut().unwrap() += x.parse::<i32>().unwrap();
         }
         acc
