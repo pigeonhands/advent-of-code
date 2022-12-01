@@ -1,1 +1,3 @@
 /run_rust_file.sh
+*.exe
+*.pdb
